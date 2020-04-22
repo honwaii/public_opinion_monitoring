@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+import sys
 from configparser import ConfigParser
-
-path = r"./config/configuration.cfg"
+sys.path.append(sys.path[0])
+path = "./config/configuration.ini"
 
 
 class Configuration:

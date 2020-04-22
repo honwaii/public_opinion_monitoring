@@ -5,13 +5,18 @@
 # @Email   : honwaii@126.com
 # @File    : data_handler.py
 # reference：https://blog.csdn.net/yimagudao/java/article/details/89186410
-import pandas as pd
-import urllib.request as req
+import datetime
 import json
-import sys
-import time
 import random
 import re
+import sched
+import sys
+import threading
+import time
+import urllib.request as req
+
+import pandas as pd
+from app.util.cfg_operator import configuration as config
 
 print(sys.getdefaultencoding())
 """
@@ -108,12 +113,7 @@ class MTCommentsCrawler:
         self.save_txt(df)  # 保存为txt
 
 
-# 初始化参数
 def mtComment():
-    # 设置关键变量
-    # 99优选酒店(北京赵公口天坛南门店)40148749,树尚快捷酒店(重庆沙坪坝三峡广场店)6909067,7天连锁酒店(成都火车北站二店)787857
-    # 金凯瑞商务宾馆(净月大学城店)2370250,锦江之星(深圳罗湖口岸万象城店)1127167
-    # 奥蓝酒店217356,7天连锁酒店(长春会展中心赛得广场店)933138,如佳宾馆(净月大学城店)2519002,布丁酒店(杭州运河大关苑路店)156591193
     productIdGroup = [217356, 933138, 2519002, 156591193]  # 酒店ID组
     limit = 60
     for productId in productIdGroup:
@@ -122,6 +122,27 @@ def mtComment():
         MTC.concatLinkParam()
         MTC.crawler()
         time.sleep(random.randint(31, 52))  # 没爬取一次，休息30到50秒
+
+
+scheduler = sched.scheduler(time.time, time.sleep)
+
+
+def do_job():
+    print("开始爬取最新的评论:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # TODO 爬取最新的评论的逻辑
+
+
+def craw_latest_comment(inc):
+    print(inc)
+    scheduler.enter(inc, 0, craw_latest_comment, (inc,))
+    do_job()
+
+
+def schedule_task():
+    interval = config.get_config("craw_interval")
+    scheduler.enter(10, 0, craw_latest_comment, (int(interval),))
+    task = threading.Thread(target=scheduler.run)
+    task.start()
 
 
 if __name__ == '__main__':
