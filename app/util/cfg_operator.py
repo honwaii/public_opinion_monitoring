@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 from configparser import ConfigParser
+
 sys.path.append(sys.path[0])
 path = "./config/configuration.ini"
 
@@ -31,4 +32,4 @@ class Configuration:
         return self.configs.get(section, config_name)
 
 
-configuration = Configuration(path)
+config = Configuration(path)

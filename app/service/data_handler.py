@@ -16,7 +16,7 @@ import time
 import urllib.request as req
 
 import pandas as pd
-from app.util.cfg_operator import configuration as config
+from app.util.cfg_operator import config
 
 print(sys.getdefaultencoding())
 """

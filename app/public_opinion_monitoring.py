@@ -4,20 +4,36 @@
 # @Author  : honwaii
 # @Email   : honwaii@126.com
 # @File    : public_opinion_monitoring.py
-import os
-import sys
-
-sys.path.append(sys.path[0])
-from app.util.cfg_operator import configuration as config
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request
 import app.service.data_handler as dh
+from app.service import general_service
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("login.html")
+
+
+@app.route("/pom/login", methods=["POST"])
+def login():
+    print(request.form)
+    user = request.form.get("user")
+    password = request.form.get("password")
+    result = general_service.check_user_permission(user, password)
+    if result:
+        # TODO 登录成功跳转的页面
+        return render_template("index.html")
+    message = '用户名或密码错误.'
+    return render_template('login.html', message=message)
+
+
+@app.route("/pom/register", methods=["POST"])
+def register():
+    print(request.form)
+    message = "user error"
+    return render_template('login.html', reg_message=message)
 
 
 #
@@ -46,6 +62,6 @@ def index():
 #     return redirect(url_for('history_page', page=1))
 
 dh.schedule_task()
-# if __name__ == "__main__":
-#     app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
 #     dh.schedule_task()

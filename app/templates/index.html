@@ -1,21 +1,37 @@
 {% extends "layout.html" %}
 
 {% block head %}
-<title>NLPartners</title>
+<title>Public Opinion Monitoring System</title>
 {% endblock %}
 
 {% block content %}
 <main>
     <div class="container">
-        <div class="row my-3">
-            <div class="col-4 row-sm my-5">
-                <h2>Public Opinion Monitoring System</h2>
-                <a href="{{url_for('index')}}" class="btn btn-secondary my-3">Let's Start</a>
+        <form class="row my-3" action="/login" method="post" onsubmit="toggle_spinner()">
+            <div class="col-9 row-md">
+                <img class="w-100" src="{{url_for('static', filename='diff_opinion.jpg')}}">
             </div>
-            <div class="col-8 row-sm">
-                <img class="w-100" src="{{url_for('static', filename='NLP.jpg')}}">
+            <div class="col-3 row-sm my-5">
+                <h3>用户登录</h3>
+                <div class="col-3 col-sm my-6">
+                    <h6>账户:</h6>
+                    <input name='user' type="text" placeholder="请输入您的用户名">
+                </div>
+                <div class="col-3 col-sm my-6">
+                    <h6>密码:</h6>
+                    <input name='password' type="text" placeholder="请输入您的密码">
+                </div>
+                <div class="col-3 col-sm my-6" style="">
+                    <a href="#" class="close" data-dismiss="alert">
+                        &times;
+                    </a>
+                    <p class="text-danger">账户或密码错误！</p>
+                </div>
+                <div class="col-3 col-sm my-6">
+                    <button id="submit_btn" type="submit" name="submit" value="button" class="btn btn-dark">登录</button>
+                </div>
             </div>
-        </div>
+        </form>
     </div>
 </main>
 {% endblock %}
