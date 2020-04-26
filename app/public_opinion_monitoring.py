@@ -19,13 +19,15 @@ def index():
 @app.route("/pom/login", methods=["POST"])
 def login():
     print(request.form)
+    message = '用户名或密码错误.'
     user = request.form.get("user")
     password = request.form.get("password")
+    if len(user) <= 0 or len(password) <= 0:
+        return render_template('login.html', message=message)
     result = general_service.check_user_permission(user, password)
     if result:
         # TODO 登录成功跳转的页面
         return render_template("index.html")
-    message = '用户名或密码错误.'
     return render_template('login.html', message=message)
 
 
