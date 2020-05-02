@@ -14,7 +14,7 @@ def train(train_iter, dev_iter, model, args):
     model.train()
     for epoch in range(1, args.epochs + 1):
         for batch in train_iter:
-            feature, target = batch.text, batch.label
+            feature, target = batch.comment, batch.rating
             feature = feature.data.t()
             target = target.data.sub(1)
             # feature.data.t_(), target.data.sub_(1)
@@ -53,7 +53,7 @@ def eval(data_iter, model, args):
     model.eval()
     corrects, avg_loss = 0, 0
     for batch in data_iter:
-        feature, target = batch.text, batch.label
+        feature, target = batch.comment, batch.rating
         # feature.data.t_(), target.data.sub_(1)
         feature = feature.data.t()
         target = target.data.sub(1)
