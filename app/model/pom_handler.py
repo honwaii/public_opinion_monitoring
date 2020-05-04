@@ -40,7 +40,7 @@ def define_default_args():
     parser.add_argument('-pretrained-path', type=str, default='pretrained', help='path of pre-trained word vectors')
 
     # device
-    parser.add_argument('-device', type=int, default=-1,
+    parser.add_argument('-device', type=int, default=1,
                         help='device to use for iterate data, -1 mean cpu [default: -1]')
 
     # option
@@ -55,7 +55,7 @@ def load_word_vectors(model_name, model_path):
 
 
 def load_dataset(text_field, label_field, args, **kwargs):
-    train_dataset, dev_dataset = dataset.get_dataset('..\\datas', text_field, label_field)
+    train_dataset, dev_dataset = dataset.get_dataset('/home/ubuntu/user_space/lhw/public_opinion_monitoring/app/datas', text_field, label_field)
     vec_name = config.get_config('pretrained-name')
     vec_path = config.get_config('pretrained-path')
     if args.static and args.pretrained_name and args.pretrained_path:
@@ -71,14 +71,14 @@ def load_dataset(text_field, label_field, args, **kwargs):
         sort_key=lambda x: len(x.comment),
         **kwargs)
     return train_iter, dev_iter
-
-
+# import sys
+print(__file__)
 args = define_default_args()
 print('Loading data...')
 text_field = data.Field(lower=True)
 label_field = data.Field(sequential=False)
 
-train_iter, dev_iter = load_dataset(text_field, label_field, args, device=-1, repeat=False, shuffle=False)
+train_iter, dev_iter = load_dataset(text_field, label_field, args, device=1, repeat=False, shuffle=False)
 
 args.vocabulary_size = len(text_field.vocab)
 if args.static:
@@ -103,7 +103,7 @@ if args.snapshot:
     text_cnn.load_state_dict(torch.load(args.snapshot))
 
 if args.cuda:
-    torch.cuda.set_device(args.device)
+    torch.cuda.set_device(0)
     text_cnn = text_cnn.cuda()
 try:
     train.train(train_iter, dev_iter, text_cnn, args)
