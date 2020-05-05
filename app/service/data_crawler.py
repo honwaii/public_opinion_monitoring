@@ -3,7 +3,7 @@
 # @Time    : 2020/5/4 0004 19:48
 # @Author  : honwaii
 # @Email   : honwaii@126.com
-# @File    : test_handler.py
+# @File    : data_crawler.py
 import urllib.request
 import csv
 import random
@@ -145,9 +145,11 @@ def get_url(offset, shop_id):
     return url
 
 
-def save_comment(shop_id, data):
+def save_comment(shop_id, data, path=None):
     for item in data.get('comments'):
-        with open(r'../datas/mt_comment/{}.csv'.format(str(shop_id)), 'a', encoding='utf-8') as f:
+        if path is None:
+            path = r'../datas/mt_comment/{}.csv'.format(str(shop_id))
+        with open(path, 'a', encoding='utf-8') as f:
             job_list = [item.get('comment'), item.get('star'), item.get('commentTime')]
             write = csv.writer(f)
             write.writerow(job_list)
@@ -262,9 +264,32 @@ def get_random_ip(ip_list):
     return proxies
 
 
-# ip_list = getListProxies()
+def get_real_comment():
+    shop_info = pd.read_csv('../datas/bsnInfo.csv', encoding='utf-8', usecols=['poiId'])
+    shop_id_list = []
+    for item in shop_info.itertuples():
+        shop_id_list.append(item[1])
+    latest_data = {}
+    for shop_id in shop_id_list:
+        url_start = 'https://hz.meituan.com/'
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36'
+        }
+        proxies = {"http": random.choice(PROXIES)}
+        s = requests.Session()
+        s.get(url_start, headers=headers, timeout=3)
+        cookie = s.cookies
+        print(get_url(0, shop_id))
+        response = s.get(url=get_url(0, shop_id), headers=headers, cookies=cookie, timeout=3, proxies=proxies)
+        data = response.text
+        if data is None:
+            print("no data ")
+            continue
+        data = json.loads(data).get('data')
+        latest_data[shop_id] = data
+        save_comment(shop_id, data, path='./datas/latest_comment/{}.csv'.format(shop_id))
 
-get_shop_comment()
+# get_shop_comment()
 # if __name__ == '__main__':
 #     # url = 'http://www.xicidaili.com/nn/'
 #     url = 'https://www.xicidaili.com/nn/'

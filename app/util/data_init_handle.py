@@ -19,7 +19,7 @@ def init():
         db_operation.insert_with_param(sql, (item[1], item[2]))
 
 
-def handle_existed_comment():
+def handle_existed_comment(path=None):
     shop_info = pd.read_csv('../datas/bsnInfo.csv', encoding='utf-8', usecols=['poiId'])
     shop_id_list = []
     for item in shop_info.itertuples():
@@ -27,7 +27,9 @@ def handle_existed_comment():
 
     rankings_col_name = ['comment', 'score', 'timestamp']
     for shop_id in shop_id_list:
-        file = '../datas/mt_comment/' + str(shop_id) + '.csv'
+        if path is None:
+            path = '../datas/mt_comment/'
+        file = path + str(shop_id) + '.csv'
         if not os.path.exists(file):
             print('file {} is not exist.'.format(file))
             continue

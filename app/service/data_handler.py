@@ -14,10 +14,12 @@ import sys
 import threading
 import time
 import urllib.request as req
-
+import os
 import pandas as pd
 from app.util.cfg_operator import config
 from app.service import db_operation
+from app.service import data_crawler
+from app.util import data_init_handle
 
 print(sys.getdefaultencoding())
 """
@@ -131,6 +133,8 @@ scheduler = sched.scheduler(time.time, time.sleep)
 def do_job():
     print("开始爬取最新的评论:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # TODO 爬取最新的评论的逻辑
+    data_crawler.get_real_comment()
+    data_init_handle.handle_existed_comment(path='../datas/latest_comment/')
 
 
 def craw_latest_comment(inc):
@@ -143,8 +147,6 @@ def schedule_task():
     scheduler.enter(10, 0, craw_latest_comment, (int(interval),))
     task = threading.Thread(target=scheduler.run)
     task.start()
-
-
 
 #
 # if __name__ == '__main__':
