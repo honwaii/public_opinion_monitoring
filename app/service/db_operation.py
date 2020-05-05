@@ -8,7 +8,7 @@ def get_conn():
     user = config.get_config('user')
     password = config.get_config('password')
     database = config.get_config('database')
-    return pymysql.connect(host=host, user=user, password=password, database=database, charset='utf8')
+    return pymysql.connect(host=host, user=user, password=password, database=database, charset='utf8mb4')
 
 
 def query_data(sql):
