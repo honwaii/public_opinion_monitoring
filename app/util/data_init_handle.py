@@ -10,6 +10,7 @@ from app.service import db_operation
 import os
 from app.model import sentiment_analysis_model as sam
 import time
+from app.service import general_service
 
 
 def init():
@@ -24,7 +25,7 @@ def handle_existed_comment(path=None):
     shop_id_list = []
     for item in shop_info.itertuples():
         shop_id_list.append(item[1])
-
+    handled_shop = general_service.get_shops_id()
     rankings_col_name = ['comment', 'score', 'timestamp']
     for shop_id in shop_id_list:
         if path is None:
@@ -32,6 +33,9 @@ def handle_existed_comment(path=None):
         file = path + str(shop_id) + '.csv'
         if not os.path.exists(file):
             print('file {} is not exist.'.format(file))
+            continue
+        if shop_id in handled_shop:
+            print('data of shop ' + str(shop_id) + ' have handled.')
             continue
         comments = pd.read_csv(file, header=None, encoding='utf-8', names=rankings_col_name)
         comments = comments.dropna()

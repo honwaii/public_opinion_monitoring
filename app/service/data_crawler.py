@@ -53,7 +53,7 @@ def get_shop_comment():
     shop_id_list = []
     for item in shop_info.itertuples():
         shop_id_list.append(item[1])
-    shop_id_list = general_service.get_all_shop_id()
+    shop_id_list = general_service.get_shops_id()
     proxy_ip_list = get_proxy_ip()
     for shop_id in shop_id_list:
         if str(shop_id) in shop_id_list:
