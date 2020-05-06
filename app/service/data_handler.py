@@ -14,12 +14,12 @@ import sys
 import threading
 import time
 import urllib.request as req
-import os
+
 import pandas as pd
-from app.util.cfg_operator import config
-from app.service import db_operation
+
 from app.service import data_crawler
 from app.util import data_init_handle
+from app.util.cfg_operator import config
 
 print(sys.getdefaultencoding())
 """

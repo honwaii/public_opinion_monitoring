@@ -38,3 +38,15 @@ def find_password(user, password, cellphone):
     print(sql)
     db_operation.insert_or_update_data(sql)
     return 1, '密码修改成功.'
+
+
+def get_all_shop_id():
+    sql = 'SELECT DISTINCT shop_id from pom_shop_comment'
+    result = db_operation.query_data(sql)
+    shop_id_list = []
+    if len(result) != 0:
+        shop_id_list = [x['shop_id'] for x in result]
+    return shop_id_list
+
+
+get_all_shop_id()
