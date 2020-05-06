@@ -91,27 +91,29 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="myModalLabel1">重置密码</h4>
             </div>
+
             <div class="modal-body">
-                <form class="form-inline" role="form">
-                    <label>用&ensp;户&ensp;名:</label><input name='user' class="form-control" placeholder="请输入您的用户名"/>
-                    <br/>
-                    <br/>
-                    <label>新&ensp;密&ensp;码:</label><input name='password1' class="form-control"
-                                                          placeholder="请设置您的新密码(不少于8位)"/>
-                    <br/>
-                    <br/>
-                    <label>确认密码:</label><input name='password2' class="form-control" placeholder="请再次确认您的新密码"/>
-                    <br/>
-                    <br/>
-                    <label>手&ensp;机&ensp;号:</label><input name='cellphone' class="form-control"
-                                                          placeholder="请输入您绑定的手机号"/>
-                    <input type="button" value="发送验证码" class="btn btn-info"/>
-                    <br/>
-                    <br/>
+                <form class="form-inline" role="form" action="/pom/reset" method="post" onsubmit="toggle_spinner()">
+                    <div class="form-group">
+                        <label>用&ensp;户&ensp;名:</label><input name='user' class="form-control" placeholder="请输入您的用户名"/>
+                        <br/>
+                        <br/>
+                        <label>新&ensp;密&ensp;码:</label><input name='password1' class="form-control"
+                                                              placeholder="请设置您的新密码"/>
+                        <br/>
+                        <br/>
+                        <label>确认密码:</label><input name='password2' class="form-control" placeholder="请再次确认您的新密码"/>
+                        <br/>
+                        <br/>
+                        <label>手&ensp;机&ensp;号:</label><input name='cellphone' class="form-control"
+                                                              placeholder="请输入您绑定的手机号"/>
+                        <br/>
+                        <br/>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="resetPwd" class="btn btn-primary">重置密码</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="resetPwd" @click="resetPwd" class="btn btn-primary">重置密码</button>
             </div>
         </div>
     </div>
@@ -134,6 +136,17 @@
 		#toRegister {
 			float: right;
 		}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

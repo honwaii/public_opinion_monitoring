@@ -19,7 +19,7 @@ def index():
 @app.route("/pom/login", methods=["POST"])
 def login():
     print(request.form)
-    message = '用户名或密码错误.'
+    message = '用户名密码错误或未注册.'
     user = request.form.get("user")
     password = request.form.get("password")
     if len(user) <= 0 or len(password) <= 0:
@@ -33,6 +33,7 @@ def login():
 
 @app.route("/pom/register", methods=["POST"])
 def register():
+    print(request.form)
     user = request.form.get('user')
     if user is None or len(str(user).strip()) == 0:
         message = '用户名不能为空.'
@@ -43,9 +44,9 @@ def register():
         message = '两次输入的密码不一致.'
         return render_template('error.html', err_message=message)
     cellphone = request.form.get('cellphone')
-    if str(cellphone).strip() != 11:
+    if len(str(cellphone).strip()) != 11:
         message = '输入的手机号不正确.'
-        return render_template('login.html', err_message=message)
+        return render_template('error.html', err_message=message)
     result = general_service.register_account(user, password1, cellphone)
     if result == 0:
         message = result[1]
@@ -53,7 +54,8 @@ def register():
     return render_template('login.html')
 
 
-def find_password():
+@app.route("/pom/reset", methods=["POST"])
+def reset_password():
     user = request.form.get('user')
     if user is None or len(str(user).strip()) == 0:
         message = '用户名不能为空.'
@@ -64,7 +66,9 @@ def find_password():
         message = '两次输入的密码不一致.'
         return render_template('error.html', err_message=message)
     cellphone = request.form.get('cellphone')
-    if str(cellphone).strip() != 11:
+    if len(str(cellphone).strip()) != 11:
+        print(cellphone)
+        print(len(str(cellphone).strip()))
         message = '输入的手机号不正确.'
         return render_template('error.html', err_message=message)
     result = general_service.find_password(user, password1, cellphone)
@@ -72,31 +76,6 @@ def find_password():
         return render_template('error.html', err_message=result[1])
     return render_template('login.html')
 
-
-#
-# @app.route("/public_opinion_monitoring")
-# def public_opinion():
-#     return render_template("public_opinion_monitoring.html")
-#
-#
-# @app.route("/auto_abs_error/<message>")
-# def error_auto_abs(message=None):
-#     return render_template("public_opinion_monitoring.html", message=message)
-#
-#
-# @app.route("/mostsim_words/")
-# def most_similar_words():
-#     return render_template("most_similar_words.html")
-#
-#
-# @app.route("/error_mostsim_words/<message>")
-# def error_most_similar_words(message=None):
-#     return render_template("most_similar_words.html", message=message)
-#
-#
-# @app.route("/history")
-# def history():
-#     return redirect(url_for('history_page', page=1))
 
 # dh.schedule_task()
 if __name__ == "__main__":
