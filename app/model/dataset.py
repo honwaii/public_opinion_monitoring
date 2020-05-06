@@ -16,7 +16,7 @@ def word_cut(text):
 
 def get_dataset(path, text_field, label_field):
     text_field.tokenize = word_cut
-    train, dev = data.TabularDataset(path=path + "\\random.csv", format='csv', skip_header=True, fields=[
+    train, dev = data.TabularDataset(path=path + "/random.csv", format='csv', skip_header=True, fields=[
         ('index', None),
         ('unnamed', None),
         ('unnamed', None),
