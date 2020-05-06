@@ -15,3 +15,23 @@ def check_user_permission(user, password):
     if user_info is None or password != user_info['password']:
         return False
     return True
+
+
+def register_account(user, password, cellphone):
+    find_user_sql = 'select * from pom_user where user=' + user + ' or phone_number=' + cellphone
+    existed_user = db_operation.query_data(find_user_sql)
+    if existed_user is not None:
+        return 0, '用户名或手机已注册.'
+    sql = 'insert into pom_user (user_name,password,phone_number) values (%s,%s,%s)'
+    db_operation.insert_with_param(sql, (user, password, cellphone))
+    return 1, '您已成功注册.'
+
+
+def find_password(user, password, cellphone):
+    find_sql = 'select * from pom_user where user=' + user + ' or phone_number=' + cellphone
+    existed_user = db_operation.query_data(find_sql)
+    if existed_user is None:
+        return 0, '该用户未注册.'
+    sql = 'update pom_user set user=' + user + ',password=' + password + ',phone_number=' + cellphone
+    db_operation.insert_or_update_data(sql)
+    return 1, '密码修改成功.'

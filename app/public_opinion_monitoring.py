@@ -5,7 +5,7 @@
 # @Email   : honwaii@126.com
 # @File    : public_opinion_monitoring.py
 from flask import Flask, render_template, request
-import app.service.data_handler as dh
+
 from app.service import general_service
 
 app = Flask(__name__)
@@ -33,9 +33,44 @@ def login():
 
 @app.route("/pom/register", methods=["POST"])
 def register():
-    print(request.form)
-    message = "user error"
-    return render_template('login.html', reg_message=message)
+    user = request.form.get('user')
+    if user is None or len(str(user).strip()) == 0:
+        message = '用户名不能为空.'
+        return render_template('error.html', err_message=message)
+    password1 = request.form.get('password1')
+    password2 = request.form.get('password2')
+    if password1 != password2:
+        message = '两次输入的密码不一致.'
+        return render_template('error.html', err_message=message)
+    cellphone = request.form.get('cellphone')
+    if str(cellphone).strip() != 11:
+        message = '输入的手机号不正确.'
+        return render_template('login.html', err_message=message)
+    result = general_service.register_account(user, password1, cellphone)
+    if result == 0:
+        message = result[1]
+        return render_template('error.html', err_message=message)
+    return render_template('login.html')
+
+
+def find_password():
+    user = request.form.get('user')
+    if user is None or len(str(user).strip()) == 0:
+        message = '用户名不能为空.'
+        return render_template('error.html', err_message=message)
+    password1 = request.form.get('password1')
+    password2 = request.form.get('password2')
+    if password1 != password2:
+        message = '两次输入的密码不一致.'
+        return render_template('error.html', err_message=message)
+    cellphone = request.form.get('cellphone')
+    if str(cellphone).strip() != 11:
+        message = '输入的手机号不正确.'
+        return render_template('error.html', err_message=message)
+    result = general_service.find_password(user, password1, cellphone)
+    if result[0] == 0:
+        return render_template('error.html', err_message=result[1])
+    return render_template('login.html')
 
 
 #
@@ -63,7 +98,7 @@ def register():
 # def history():
 #     return redirect(url_for('history_page', page=1))
 
-dh.schedule_task()
+# dh.schedule_task()
 if __name__ == "__main__":
     app.run(debug=True)
 #     dh.schedule_task()

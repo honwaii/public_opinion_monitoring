@@ -93,20 +93,21 @@
             </div>
             <div class="modal-body">
                 <form class="form-inline" role="form">
-                    <label>用&ensp;户&ensp;名:</label><input class="form-control" placeholder="请输入您的用户名"/>
+                    <label>用&ensp;户&ensp;名:</label><input name='user' class="form-control" placeholder="请输入您的用户名"/>
                     <br/>
                     <br/>
-                    <label>新&ensp;密&ensp;码:</label><input class="form-control" placeholder="请设置您的新密码(不少于8位)"/>
+                    <label>新&ensp;密&ensp;码:</label><input name='password1' class="form-control"
+                                                          placeholder="请设置您的新密码(不少于8位)"/>
                     <br/>
                     <br/>
-                    <label>确认密码:</label><input class="form-control" placeholder="请再次确认您的新密码"/>
+                    <label>确认密码:</label><input name='password2' class="form-control" placeholder="请再次确认您的新密码"/>
                     <br/>
                     <br/>
-                    <label>手&ensp;机&ensp;号:</label><input class="form-control" placeholder="请输入您绑定的手机号"/>
+                    <label>手&ensp;机&ensp;号:</label><input name='cellphone' class="form-control"
+                                                          placeholder="请输入您绑定的手机号"/>
                     <input type="button" value="发送验证码" class="btn btn-info"/>
                     <br/>
                     <br/>
-                    <label>验&ensp;证&ensp;码:</label><input class="form-control" placeholder="请输入短信验证码"/>
                 </form>
             </div>
             <div class="modal-footer">
@@ -133,6 +134,8 @@
 		#toRegister {
 			float: right;
 		}
+
+
 
 
 
