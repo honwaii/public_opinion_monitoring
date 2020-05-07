@@ -4,6 +4,10 @@
 # @Author  : honwaii
 # @Email   : honwaii@126.com
 # @File    : general_service.py
+import datetime
+import time
+from collections import defaultdict
+
 from app.service import db_operation
 
 
@@ -50,9 +54,12 @@ def get_shops_id():
 
 
 def get_latest_timestamp():
-    sql = "SELECT shop_id,`timestamp` FROM `pom_shop_comment` " \
-          "WHERE id IN(SELECT SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY `timestamp` DESC),', ',1) " \
-          "FROM `pom_shop_comment` GROUP BY shop_id ) ORDER BY `timestamp` DESC"
-    result = db_operation.query_data(sql)
-
-    return
+    query_shops_sql = 'SELECT DISTINCT shop_id from pom_shop_comment'
+    shops = db_operation.query_data(query_shops_sql)
+    shop_latest_comment = defaultdict()
+    for shop in shops:
+        sql = 'select timestamp from pom_shop_comment where shop_id=' + str(
+            shop['shop_id']) + ' order by `timestamp` desc limit 1 '
+        d = db_operation.query_data(sql)
+        shop_latest_comment[shop['shop_id']] = d[0]['timestamp'].timestamp()
+    return shop_latest_comment
