@@ -47,3 +47,12 @@ def get_shops_id():
     if len(result) != 0:
         shop_id_list = [x['shop_id'] for x in result]
     return shop_id_list
+
+
+def get_latest_timestamp():
+    sql = "SELECT shop_id,`timestamp` FROM `pom_shop_comment` " \
+          "WHERE id IN(SELECT SUBSTRING_INDEX(GROUP_CONCAT(id ORDER BY `timestamp` DESC),', ',1) " \
+          "FROM `pom_shop_comment` GROUP BY shop_id ) ORDER BY `timestamp` DESC"
+    result = db_operation.query_data(sql)
+
+    return
