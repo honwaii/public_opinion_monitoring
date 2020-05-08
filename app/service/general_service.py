@@ -7,8 +7,13 @@
 import datetime
 import time
 from collections import defaultdict
+from functools import reduce
+
+import jieba
 
 from app.service import db_operation
+
+from matplotlib import pyplot as plt
 
 
 def check_user_permission(user, password):
@@ -63,3 +68,63 @@ def get_latest_timestamp():
         d = db_operation.query_data(sql)
         shop_latest_comment[shop['shop_id']] = d[0]['timestamp'].timestamp()
     return shop_latest_comment
+
+
+def score_statistics():
+    sql = 'select score,count(*) count FROM pom_shop_comment GROUP BY score'
+    result = db_operation.query_data(sql)
+    print(result)
+    return result
+
+
+def plot_statistic_image():
+    scores = score_statistics()
+    plt.rcParams['font.sans-serif'] = ['SimHei']
+    plt.figure(figsize=(9, 7))
+    labels = [u'情感得分:1', u'情感得分:2', u'情感得分:3', u'情感得分:4', u'情感得分:5']
+    sizes = [x['count'] for x in scores]
+    plt.pie(sizes, labels=labels, labeldistance=1.05, autopct='%3.1f%%', shadow=False, startangle=45, pctdistance=0.8)
+    plt.title("平台商铺评论评分统计")
+    plt.axis('equal')
+    plt.legend()
+    plt.savefig('../static/scores.png')
+    plt.show()
+
+
+def top_rating_shop(top_n):
+    sql = 'SELECT shop_id,avg(score) avg_score,shop_name\
+            FROM pom_shop_comment a,pom_shop b\
+            WHERE a.shop_id=b.poi_id\
+            GROUP BY shop_id ORDER BY avg_score DESC limit ' + str(top_n)
+    result = db_operation.query_data(sql)
+    print(result)
+    return result
+
+
+def plot_top_rated_shop():
+    top_shops = top_rating_shop(10)
+    plt.rcParams['font.sans-serif'] = ['SimHei']  # 指定默认字体 SimHei为黑体
+    plt.figure(figsize=(12, 4.8))
+    x = []
+    for shop in top_shops:
+        t = jieba.lcut(shop['shop_name'])
+        if len(t) > 5:
+            t.insert(5, '\n')
+        if len(t) > 10:
+            t.insert(10, '\n')
+        name = reduce(lambda x, y: x + y, t)
+        x.append(name)
+    x.reverse()
+    y = [x['avg_score'] for x in top_shops]
+    y.reverse()
+    plt.rcParams['savefig.dpi'] = 300
+    plt.title('评分排名前十的店铺')
+    plt.xlabel('平均得分')
+    plt.ylabel('店铺名称')
+    plt.barh(x, y, )
+    plt.savefig('../static/top_n.png', dpi=300)
+    plt.show()
+
+
+# plot_top_rated_shop()
+# plot_statistic_image()
