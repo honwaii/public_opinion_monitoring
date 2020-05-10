@@ -1,18 +1,19 @@
 {% extends "layout.html" %}
 
 {% block head %}
-<title>NLPartners</title>
+<title>评论检测系统</title>
 {% endblock %}
 
 {% block content %}
 <main>
     <div class="container">
-        <div class="col-4 row-sm-3"></div>
+        <!--        <div class="col-4 row-sm-3"></div>-->
         <div class="row my-3">
-            <div class="col-md-12 row-md my-4" id="btnCenter2">
-                <img class="w-200 img-responsive left-block" src="{{url_for('static', filename='scores.png')}}" height="300" width="400">
-                <img class="w-200" src="{{url_for('static', filename='top_n.png')}}" height="300" width="400">
-                <img class="w-200" src="{{url_for('static', filename='diff_opinion.jpg')}}" height="300" width="400">
+            <div class="col-4 row-sm my-5">
+                <img src="{{url_for('static', filename='scores.png')}}" height="500" width="600">
+            </div>
+            <div class="col- row-sm">
+                <img src="{{url_for('static', filename='top_n.png')}}" height="360" width="900">
             </div>
         </div>
     </div>
