@@ -16,6 +16,11 @@ def index():
     return render_template("login.html")
 
 
+@app.route("/home")
+def home():
+    return render_template("index.html")
+
+
 @app.route("/pom/login", methods=["POST"])
 def login():
     print(request.form)
@@ -82,10 +87,15 @@ def get_shop_key_words(shop_id):
     return
 
 
-@app.route("/pom/statistic", methods=["POST"])
+@app.route("/get_statistic_detail")
 def get_statistic_detail():
-    # general_service
-    return
+    score_count = general_service.score_statistics()
+    core_key_words = general_service.get_key_words_by_score()
+    results = []
+    for score in range(1, 6):
+        result = {'score': score, 'count': score_count[score], 'key_words': core_key_words[score]}
+        results.append(result)
+    return render_template('shop_comment.html', results=results)
 
 
 # dh.schedule_task()

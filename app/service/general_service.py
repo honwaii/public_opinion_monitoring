@@ -73,8 +73,26 @@ def get_latest_timestamp():
 def score_statistics():
     sql = 'select score,count(*) count FROM pom_shop_comment GROUP BY score'
     result = db_operation.query_data(sql)
-    print(result)
-    return result
+    score_count = {}
+    for each in result:
+        score_count[each['score']] = each['count']
+    return score_count
+
+
+def get_key_words_by_score():
+    score_key_words = {}
+    for score in range(1, 6):
+        sql = 'SELECT score,key_word,COUNT(key_word) count from pom_shop_comment where score=' + str(
+            score) + ' GROUP BY key_word ORDER BY count desc LIMIT 10'
+        result = db_operation.query_data(sql)
+        key_words = []
+        for each in result:
+            if len(str(each['key_word']).strip()) == 0:
+                continue
+            key_words.append(each['key_word'])
+        key_words_str = reduce(lambda x, y: x + '、' + y, key_words)
+        score_key_words[score] = key_words_str
+    return score_key_words
 
 
 def plot_statistic_image():

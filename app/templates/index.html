@@ -7,13 +7,24 @@
 {% block content %}
 <main>
     <div class="container">
-        <!--        <div class="col-4 row-sm-3"></div>-->
-        <div class="row my-3">
-            <div class="col-4 row-sm my-5">
-                <img src="{{url_for('static', filename='scores.png')}}" height="500" width="600">
+        <div class="row">
+            <div class="col-md-4 text-md-center" style="height:80px;top: 20px;font-size:125%">平台商铺评分总体统计</div>
+            <div class="col-md-8 text-md-center" style="height:80px;top: 20px;font-size:125%">好评排名前十商铺</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <img src="../static/scores.png" height="80%" width="90%">
             </div>
-            <div class="col- row-sm">
-                <img src="{{url_for('static', filename='top_n.png')}}" height="360" width="900">
+            <div class="col-md-8 text-center">
+                <img src="../static/top_n.png" height="90%">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <a  href="{{url_for('get_statistic_detail')}}">了解详情</a>
+            </div>
+            <div class="col-md-8 text-center">
+                <a  href="{{url_for('get_statistic_detail')}}">了解详情</a>
             </div>
         </div>
     </div>
