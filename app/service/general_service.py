@@ -115,7 +115,6 @@ def top_rating_shop(top_n):
             WHERE a.shop_id=b.poi_id\
             GROUP BY shop_id ORDER BY avg_score DESC limit ' + str(top_n)
     result = db_operation.query_data(sql)
-    print(result)
     return result
 
 
@@ -158,14 +157,30 @@ def save_key_word(id, key_word):
 
 def get_shop_key_words(shop_id):
     sql = 'SELECT key_word,COUNT(key_word) count from pom_shop_comment where shop_id=' + str(shop_id) + \
-          'GROUP BY key_word ORDER BY count desc limit 5'
+          ' GROUP BY key_word ORDER BY count desc limit 10'
+    print(sql)
     result = db_operation.query_data(sql)
-    filtered_rsult = []
+    filtered_result = []
+    key_words = []
     for each in result:
         if len(str(each['key_word']).strip()) == 0:
             continue
-        filtered_rsult.append(each)
-    return filtered_rsult
+        filtered_result.append(each)
+        key_words.append(each['key_word'])
+    return filtered_result, key_words
 
+
+def get_shop_good_rating(shop_id):
+    sql = 'select count(*) count FROM pom_shop_comment where shop_id="' + str(
+        shop_id) + '" and (score =5 or score= 4 or score =3)'
+    total_sql = 'select count(*) count from pom_shop_comment where shop_id="' + str(shop_id) + '"'
+    good_count = db_operation.query_data(sql)[0]['count']
+    total_count = db_operation.query_data(total_sql)[0]['count']
+    good_rating = str(round(float(good_count) / float(total_count) * 100, 2)) + '%'
+    return good_rating
+
+
+t = get_shop_good_rating(1696868)
+print(t)
 # plot_top_rated_shop()
 # plot_statistic_image()

@@ -10,16 +10,20 @@
         <table class="table table-hover">
             <thead>
             <tr>
-                <th class="text-center" scope="col" style="width: 15%">情感评分</th>
-                <th class="text-center" scope="col" style="width: 15%">评论总数</th>
+                <th class="text-center" scope="col" style="width: 15%">序号</th>
+                <th class="text-center" scope="col" style="width: 15%">店铺名称</th>
+                <th class="text-center" scope="col">平均得分</th>
+                <th class="text-center" scope="col">好评率</th>
                 <th class="text-center" scope="col">关键词</th>
             </tr>
             </thead>
             <tbody>
             {% for result in results %}
             <tr>
-                <th class="text-center" scope="row">{{result['score']}}</th>
-                <td class="text-center">{{result['count']}}</td>
+                <th class="text-center" scope="row">{{result['id']}}</th>
+                <td class="text-center">{{result['name']}}</td>
+                <td class="text-center">{{result['score']}}</td>
+                <td class="text-center">{{result['rating']}}</td>
                 <td class="text-center">{{result['key_words']}}</td>
             </tr>
             {% endfor%}

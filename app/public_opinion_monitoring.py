@@ -4,6 +4,8 @@
 # @Author  : honwaii
 # @Email   : honwaii@126.com
 # @File    : public_opinion_monitoring.py
+from functools import reduce
+
 from flask import Flask, render_template, request
 
 from app.service import general_service
@@ -96,6 +98,22 @@ def get_statistic_detail():
         result = {'score': score, 'count': score_count[score], 'key_words': core_key_words[score]}
         results.append(result)
     return render_template('shop_comment.html', results=results)
+
+
+@app.route("/get_shop_rating_detail")
+def get_shop_rating_detail():
+    shop_ratings = general_service.top_rating_shop(10)
+    count = 0
+    results = []
+    for each in shop_ratings:
+        good_rating = general_service.get_shop_good_rating(each['shop_id'])
+        _, key_words = general_service.get_shop_key_words(each['shop_id'])
+        words = reduce(lambda x, y: x + '、' + y, key_words)
+        result = {'id': count + 1, 'name': each['shop_name'], 'score': each['avg_score'], 'rating': good_rating,
+                  'key_words': words}
+        results.append(result)
+        count += 1
+    return render_template('shop_rating.html', results=results)
 
 
 # dh.schedule_task()
