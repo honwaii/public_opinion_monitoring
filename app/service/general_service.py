@@ -126,5 +126,28 @@ def plot_top_rated_shop():
     plt.show()
 
 
+def get_all_comments():
+    sql = 'select id,comment from pom_shop_comment'
+    result = db_operation.query_data(sql)
+    return result
+
+
+def save_key_word(id, key_word):
+    sql = 'update pom_shop_comment set key_word="' + key_word + '" where id="' + str(id) + '"'
+    db_operation.insert_or_update_data(sql)
+    return
+
+
+def get_shop_key_words(shop_id):
+    sql = 'SELECT key_word,COUNT(key_word) count from pom_shop_comment where shop_id=' + str(shop_id) + \
+          'GROUP BY key_word ORDER BY count desc limit 5'
+    result = db_operation.query_data(sql)
+    filtered_rsult = []
+    for each in result:
+        if len(str(each['key_word']).strip()) == 0:
+            continue
+        filtered_rsult.append(each)
+    return filtered_rsult
+
 # plot_top_rated_shop()
 # plot_statistic_image()

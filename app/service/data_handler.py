@@ -16,10 +16,15 @@ import time
 import urllib.request as req
 
 import pandas as pd
+from gensim.models import KeyedVectors
+from scipy.spatial.distance import pdist
 
 from app.service import data_crawler
 from app.util import data_init_handle
 from app.util.cfg_operator import config
+import jieba
+from app.model.sentiment_analysis_model import stop_words
+import numpy as np
 
 print(sys.getdefaultencoding())
 """
@@ -133,8 +138,8 @@ scheduler = sched.scheduler(time.time, time.sleep)
 def do_job():
     print("开始爬取最新的评论:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # TODO 爬取最新的评论的逻辑
-    data_crawler.get_real_comment()
-    data_init_handle.handle_existed_comment(path='../datas/latest_comment/')
+    # data_crawler.get_real_comment()
+    # data_init_handle.handle_existed_comment(path='../datas/latest_comment/')
 
 
 def craw_latest_comment(inc):
@@ -148,6 +153,60 @@ def schedule_task():
     task = threading.Thread(target=scheduler.run)
     task.start()
 
+
+path = config.get_config('word_embedding_path')
+word_vector_model = KeyedVectors.load_word2vec_format(path)
+
+
+def cosine(vec1, vec2):
+    distance = pdist(np.vstack([vec1, vec2]), 'cosine')[0]
+    return distance
+
+
+def extract_key_words(comment):
+    comment = comment.replace("\n", "")
+    comment = comment.replace("\r", "")
+    words = jieba.lcut(comment)
+    words = filter(lambda x: len(x) > 1, words)
+    words = list(filter(lambda x: x not in stop_words, words))
+    if len(words) <= 0:
+        return ''
+    words_vector = []
+    for word in words:
+        try:
+            word_vector = word_vector_model[word]
+        except KeyError:
+            word_vector = np.zeros(word_vector_model.vector_size)
+        words_vector.append(word_vector)
+    comment_vector = np.asarray(words_vector) / len(words_vector)
+    min = 1
+    key_word = ''
+    for index, item in enumerate(words_vector):
+        similarity = cosine(item, comment_vector)
+        if similarity < min:
+            min = similarity
+            key_word = words[index]
+    return key_word
+
+
+from app.service import general_service
+
+
+def handle_comments():
+    comments = general_service.get_all_comments()
+    print('fetched all comment ' + str(len(comments)) + '条')
+    key_words = {}
+    for each in comments:
+        comment = each['comment']
+        key_word = extract_key_words(comment)
+        key_words[each['id']] = key_word
+    print('computed all key words.')
+    for id in key_words.keys():
+        general_service.save_key_word(id, key_words.get(id))
+    print('finished!')
+
+
+handle_comments()
 #
 # if __name__ == '__main__':
 #     mtComment()

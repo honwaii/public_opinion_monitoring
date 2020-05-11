@@ -77,6 +77,17 @@ def reset_password():
     return render_template('login.html')
 
 
+@app.route("/pom/comment/<shop_id>")
+def get_shop_key_words(shop_id):
+    return
+
+
+@app.route("/pom/statistic", methods=["POST"])
+def get_statistic_detail():
+    # general_service
+    return
+
+
 # dh.schedule_task()
 if __name__ == "__main__":
     app.run(debug=True)

@@ -50,4 +50,4 @@ def handle_existed_comment(path=None):
     return
 
 
-handle_existed_comment()
+# handle_existed_comment()

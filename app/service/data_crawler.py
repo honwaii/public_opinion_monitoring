@@ -186,7 +186,7 @@ def get_proxy_ip():
     return ip_list
 
 
-get_proxy_ip()
+# get_proxy_ip()
 
 # get_shop_comment()
 # if __name__ == '__main__':
