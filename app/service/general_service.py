@@ -158,7 +158,6 @@ def save_key_word(id, key_word):
 def get_shop_key_words(shop_id):
     sql = 'SELECT key_word,COUNT(key_word) count from pom_shop_comment where shop_id=' + str(shop_id) + \
           ' GROUP BY key_word ORDER BY count desc limit 10'
-    print(sql)
     result = db_operation.query_data(sql)
     filtered_result = []
     key_words = []
