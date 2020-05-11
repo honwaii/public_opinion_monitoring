@@ -179,7 +179,10 @@ def get_shop_good_rating(shop_id):
     return good_rating
 
 
-t = get_shop_good_rating(1696868)
-print(t)
+def get_good_comments_by_shop(shop_id):
+    sql = 'select comment,score,key_word,`timestamp` from pom_shop_comment where shop_id="' + str(shop_id) \
+          + '" and (score=3 or score =4 or score =5) order by `timestamp` desc limit 10'
+    result = db_operation.query_data(sql)
+    return result
 # plot_top_rated_shop()
 # plot_statistic_image()

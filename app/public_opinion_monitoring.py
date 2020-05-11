@@ -97,7 +97,7 @@ def get_statistic_detail():
     for score in range(1, 6):
         result = {'score': score, 'count': score_count[score], 'key_words': core_key_words[score]}
         results.append(result)
-    return render_template('shop_comment.html', results=results)
+    return render_template('statistic_comment.html', results=results)
 
 
 @app.route("/get_shop_rating_detail")
@@ -110,10 +110,23 @@ def get_shop_rating_detail():
         _, key_words = general_service.get_shop_key_words(each['shop_id'])
         words = reduce(lambda x, y: x + '、' + y, key_words)
         result = {'id': count + 1, 'name': each['shop_name'], 'score': each['avg_score'], 'rating': good_rating,
-                  'key_words': words}
+                  'key_words': words, 'shop_id': each['shop_id']}
         results.append(result)
         count += 1
     return render_template('shop_rating.html', results=results)
+
+
+@app.route("/show_shop_comments/<shop_id>")
+def show_shop_comments(shop_id):
+    comments = general_service.get_good_comments_by_shop(shop_id)
+    count = 0
+    results = []
+    for each in comments:
+        result = {'id': count + 1, 'comment': each['comment'], 'score': each['score'], 'key_word': each['key_word'],
+                  'timestamp': each['timestamp']}
+        results.append(result)
+        count += 1
+    return render_template('shop_comments.html', results=results)
 
 
 # dh.schedule_task()

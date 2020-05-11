@@ -11,22 +11,20 @@
             <thead>
             <tr>
                 <th class="text-center" scope="col" style="width: 15%">序号</th>
-                <th class="text-center" scope="col" style="width: 15%">店铺名称</th>
-                <th class="text-center" scope="col">平均得分</th>
-                <th class="text-center" scope="col">好评率</th>
-                <th class="text-center" scope="col">关键词</th>
+                <th class="text-center" scope="col">评论</th>
+                <th class="text-center" scope="col" style="width: 15%">情感得分</th>
+                <th class="text-center" scope="col" style="width: 15%">关键词</th>
+                <th class="text-center" scope="col" style="width: 15%">时间</th>
             </tr>
             </thead>
             <tbody>
             {% for result in results %}
             <tr>
                 <th class="text-center" scope="row">{{result['id']}}</th>
-                <td class="text-center">
-                    <a class="text-dark" href="{{url_for('show_shop_comments',shop_id=result['shop_id'])}}">{{result['name']}}</a>
-                    </td>
+                <td class="text-center"> {{result['comment']}}</td>
                 <td class="text-center">{{result['score']}}</td>
-                <td class="text-center">{{result['rating']}}</td>
-                <td class="text-center">{{result['key_words']}}</td>
+                <td class="text-center">{{result['key_word']}}</td>
+                <td class="text-center">{{result['timestamp']}}</td>
             </tr>
             {% endfor%}
             </tbody>
