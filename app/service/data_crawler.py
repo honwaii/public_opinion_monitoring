@@ -111,17 +111,15 @@ def get_url(offset, shop_id):
 
 
 def save_comment(shop_id, data, path=None):
-    mark_time = datetime.datetime.timestamp()
+    mark_time = int(round(time.time() * 1000))
     for item in data.get('comments'):
         if path is None:
-            path = r'../datas/mt_comment/{}.csv'.format(str(shop_id))
+            path = r'./datas/mt_comment/{}.csv'.format(str(shop_id))
         with open(path, 'a', encoding='utf-8') as f:
             job_list = [item.get('comment'), item.get('star'), item.get('commentTime')]
             write = csv.writer(f)
             write.writerow(job_list)
-
-            mark_time = mark_time if item.get('commentTime') / 1000 > mark_time else item.get(
-                'commentTime') / 1000
+            mark_time = mark_time if float(item.get('commentTime')) > mark_time else float(item.get('commentTime'))
     return mark_time
 
 
@@ -138,13 +136,18 @@ def get_random_ip(ip_list):
 
 
 def get_real_comment():
-    shop_info = pd.read_csv('../datas/bsnInfo.csv', encoding='utf-8', usecols=['poiId'])
+    shop_info = pd.read_csv('./datas/bsnInfo.csv', encoding='utf-8', usecols=['poiId'])
     shop_id_list = []
+    count = 0
     for item in shop_info.itertuples():
         shop_id_list.append(item[1])
+        count += 1
+        if count == 5:
+            break
     latest_timestamp = general_service.get_latest_timestamp()
     proxy_ip_list = get_proxy_ip()
     for shop_id in shop_id_list:
+        print('fetch latest comment of shop_id={}'.format(shop_id))
         proxies = random.choice(proxy_ip_list)
         get_data(shop_id, proxies, latest_timestamp, 0)
 
@@ -154,16 +157,23 @@ def get_data(shop_id, proxies, latest_timestamp, offset):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36'
     }
     response = requests.get(url=get_url(offset, shop_id), headers=headers, timeout=3, proxies=proxies)
-    data = response.text
-    data = json.loads(data).get('data')
-    mark_time = save_comment(shop_id, data, path='./datas/latest_comment/{}.csv'.format(shop_id))
-    if mark_time > latest_timestamp[shop_id]:
-        offset += 1
-        get_data(shop_id, proxies, latest_timestamp, offset)
+    try:
+        data = response.text
+        data = json.loads(data).get('data')
+        mark_time = save_comment(shop_id, data, path='./datas/latest_comment/{}.csv'.format(shop_id))
+        if mark_time > latest_timestamp[shop_id]:
+            offset += 1
+            get_data(shop_id, proxies, latest_timestamp, offset)
+    except Exception:
+        print('url={}'.format(get_url(offset, shop_id)))
+        print(data)
 
 
-def get_proxy_ip():
-    url = 'http://www.xicidaili.com/nn/'
+def get_proxy_ip(page=None):
+    if page is None:
+        url = 'http://www.xicidaili.com/nn/'
+    else:
+        url = 'http://www.xicidaili.com/nn/' + str(page)
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36'
     }
@@ -182,9 +192,13 @@ def get_proxy_ip():
             continue
         if result.status_code == 200:
             ip_list.append(proxy)
-    print(ip_list)
+        if len(ip_list) == 3:
+            break
+    print('获取的ip代理地址:{}'.format(ip_list))
+    if len(ip_list) == 0:
+        for i in range(2, 5):
+            get_proxy_ip(i)
     return ip_list
-
 
 # get_proxy_ip()
 

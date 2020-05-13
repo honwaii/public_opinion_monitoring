@@ -21,7 +21,7 @@ def init():
 
 
 def handle_existed_comment(path=None):
-    shop_info = pd.read_csv('../datas/bsnInfo.csv', encoding='utf-8', usecols=['poiId'])
+    shop_info = pd.read_csv('./datas/bsnInfo.csv', encoding='utf-8', usecols=['poiId'])
     shop_id_list = []
     for item in shop_info.itertuples():
         shop_id_list.append(item[1])
@@ -29,7 +29,7 @@ def handle_existed_comment(path=None):
     rankings_col_name = ['comment', 'score', 'timestamp']
     for shop_id in shop_id_list:
         if path is None:
-            path = '../datas/mt_comment/'
+            path = './datas/mt_comment/'
         file = path + str(shop_id) + '.csv'
         if not os.path.exists(file):
             print('file {} is not exist.'.format(file))

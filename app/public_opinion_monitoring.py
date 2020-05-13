@@ -9,6 +9,7 @@ from functools import reduce
 from flask import Flask, render_template, request
 
 from app.service import general_service
+from app.service import data_handler as dh
 
 app = Flask(__name__)
 
@@ -33,7 +34,6 @@ def login():
         return render_template('login.html', message=message)
     result = general_service.check_user_permission(user, password)
     if result:
-        # TODO 登录成功跳转的页面
         return render_template("index.html")
     return render_template('login.html', message=message)
 
@@ -129,7 +129,7 @@ def show_shop_comments(shop_id):
     return render_template('shop_comments.html', results=results)
 
 
-# dh.schedule_task()
+dh.schedule_task()
 if __name__ == "__main__":
     app.run(debug=True)
-#     dh.schedule_task()
+    dh.schedule_task()

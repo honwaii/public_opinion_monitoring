@@ -82,7 +82,6 @@ def train_word_vector_model():
     return
 
 
-
 def predict(comment):
     cut_comment = process_comment(comment, stop_words)
     result = classifier.predict(cut_comment)
@@ -91,7 +90,7 @@ def predict(comment):
 
 # handle_data()
 # train('../datas/fast_text_dataset.txt')
-with open('../datas/中文停用词表.txt', encoding='utf-8') as reader:
+with open('./datas/中文停用词表.txt', encoding='utf-8') as reader:
     stop_words = reader.read().split("\n")
 
-classifier = fasttext.load_model('../model/sentiment_analysis_model')
+classifier = fasttext.load_model('./model/sentiment_analysis_model')

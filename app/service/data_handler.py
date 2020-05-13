@@ -7,26 +7,26 @@
 # reference：https://blog.csdn.net/yimagudao/java/article/details/89186410
 import datetime
 import json
+import os
 import random
 import re
 import sched
-import sys
 import threading
 import time
-import urllib.request as req
-
+import jieba
+import numpy as np
 import pandas as pd
+import urllib.request as req
 from gensim.models import KeyedVectors
 from scipy.spatial.distance import pdist
-
+from app.model.sentiment_analysis_model import stop_words
 from app.service import data_crawler
+from app.service import general_service
 from app.util import data_init_handle
 from app.util.cfg_operator import config
-import jieba
-from app.model.sentiment_analysis_model import stop_words
-import numpy as np
+from app.service import db_operation
+from app.model import sentiment_analysis_model as sam
 
-print(sys.getdefaultencoding())
 """
 爬取美团上某个酒店的评论数据，详见https://blog.csdn.net/yimagudao/article/details/89186410
 """
@@ -137,9 +137,9 @@ scheduler = sched.scheduler(time.time, time.sleep)
 
 def do_job():
     print("开始爬取最新的评论:", datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    # TODO 爬取最新的评论的逻辑
-    # data_crawler.get_real_comment()
-    # data_init_handle.handle_existed_comment(path='../datas/latest_comment/')
+    data_crawler.get_real_comment()
+    handle_latest_comments()
+    general_service.plot_latest_chart()
 
 
 def craw_latest_comment(inc):
@@ -189,9 +189,6 @@ def extract_key_words(comment):
     return key_word
 
 
-from app.service import general_service
-
-
 def handle_comments():
     comments = general_service.get_all_comments()
     print('fetched all comment ' + str(len(comments)) + '条')
@@ -206,7 +203,33 @@ def handle_comments():
     print('finished!')
 
 
-handle_comments()
+def handle_latest_comments():
+    shop_info = pd.read_csv('./datas/bsnInfo.csv', encoding='utf-8', usecols=['poiId'])
+    shop_id_list = []
+    for item in shop_info.itertuples():
+        shop_id_list.append(item[1])
+    rankings_col_name = ['comment', 'score', 'timestamp']
+    for shop_id in shop_id_list:
+        file = './datas/mt_comment/' + str(shop_id) + '.csv'
+        if not os.path.exists(file):
+            print('file {} is not exist.'.format(file))
+            continue
+        print('start to handle file {}'.format(file))
+        comments = pd.read_csv(file, header=None, encoding='utf-8', names=rankings_col_name)
+        comments = comments.dropna()
+        for item in comments.itertuples():
+            comment = item[1]
+            score = sam.predict(comment)
+            timestamp = float(item[3]) / 1000
+            tmObject = time.localtime(timestamp)
+            tmStr = time.strftime("%Y-%m-%d %H:%M:%S", tmObject)
+            sql = 'insert into pom_shop_comment (shop_id,comment,score,timestamp) values(%s,%s,%s,%s)'
+            db_operation.insert_with_param(sql, (shop_id, comment, score, tmStr))
+        print('file {} handle finished. now will remove it.'.format(file))
+        os.remove(file)
+    return
+
+# handle_comments()
 #
 # if __name__ == '__main__':
 #     mtComment()

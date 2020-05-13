@@ -105,7 +105,7 @@ def plot_statistic_image():
     plt.title("平台商铺评论评分统计")
     plt.axis('equal')
     plt.legend()
-    plt.savefig('../static/scores.png')
+    plt.savefig('./static/scores.png')
     plt.show()
 
 
@@ -139,7 +139,7 @@ def plot_top_rated_shop():
     plt.xlabel('平均得分')
     plt.ylabel('店铺名称')
     plt.barh(x, y, )
-    plt.savefig('../static/top_n.png', dpi=300)
+    plt.savefig('./static/top_n.png', dpi=300)
     plt.show()
 
 
@@ -184,5 +184,11 @@ def get_good_comments_by_shop(shop_id):
           + '" and (score=3 or score =4 or score =5) order by `timestamp` desc limit 10'
     result = db_operation.query_data(sql)
     return result
+
+
+def plot_latest_chart():
+    plot_top_rated_shop()
+    plot_statistic_image()
+    return
 # plot_top_rated_shop()
 # plot_statistic_image()

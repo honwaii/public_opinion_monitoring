@@ -4,7 +4,7 @@ import sys
 from configparser import ConfigParser
 
 sys.path.append(sys.path[0])
-path = "../config/configuration.ini"
+path = "./config/configuration.ini"
 
 
 class Configuration:
