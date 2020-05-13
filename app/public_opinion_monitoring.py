@@ -132,4 +132,4 @@ def show_shop_comments(shop_id):
 dh.schedule_task()
 if __name__ == "__main__":
     app.run(debug=True)
-    dh.schedule_task()
+    # dh.schedule_task()

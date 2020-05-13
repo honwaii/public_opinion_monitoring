@@ -25,6 +25,18 @@ def handle_data():
     return
 
 
+def split_data_set():
+    rankings_col_name = ['label', 'comment']
+    data = pd.read_csv("../datas/fast_text_dataset.txt", header=None, encoding='utf-8', names=rankings_col_name)
+    shuffle_data = data.sample(frac=1.0).reset_index()
+    train_num = int(shuffle_data.shape[0] * 0.8)
+    train_data = shuffle_data.loc[0:train_num].drop(labels='index', axis=1)
+    test_data = shuffle_data.loc[train_num + 1:].drop(labels='index', axis=1)
+    train_data.to_csv("../datas/train_data.csv", index=False, header=False)
+    test_data.to_csv("../datas/test_data.csv", index=False, header=False)
+    return
+
+
 def process_text(rating, comment, stop_words, docs):
     words = jieba.lcut(comment)
     words = filter(lambda x: len(x) > 1, words)
@@ -41,11 +53,12 @@ def write_data(docs, output):
         writer.close()
 
 
-def train(saveDataFile):
+def train():
     # vec = KeyedVectors.load_word2vec_format('./pretrained/sgns.wiki.model')
-    classifier = fasttext.train_supervised(input='../datas/fast_text_dataset.txt', label='__lable__', dim=200)
-    print_results(*classifier.test(saveDataFile))
-    classifier.save_model('./sentiment_analysis_model')
+    classifier = fasttext.train_supervised(input='../datas/train_data.csv', epoch=10, lr=0.005, label='__lable__',
+                                           dim=150)
+    print_results(*classifier.test('../datas/test_data.csv'))
+    classifier.save_model('./sentiment_analysis_model_0.005_150_10')
     return
 
 
@@ -87,10 +100,9 @@ def predict(comment):
     result = classifier.predict(cut_comment)
     return result[0][0].replace('__lable__', '')
 
-
 # handle_data()
 # train('../datas/fast_text_dataset.txt')
 with open('./datas/中文停用词表.txt', encoding='utf-8') as reader:
     stop_words = reader.read().split("\n")
-
+#
 classifier = fasttext.load_model('./model/sentiment_analysis_model')

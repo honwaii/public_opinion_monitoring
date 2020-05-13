@@ -100,7 +100,7 @@ def plot_statistic_image():
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.figure(figsize=(9, 7))
     labels = [u'情感得分:1', u'情感得分:2', u'情感得分:3', u'情感得分:4', u'情感得分:5']
-    sizes = [x['count'] for x in scores]
+    sizes = [scores[x] for x in scores]
     plt.pie(sizes, labels=labels, labeldistance=1.05, autopct='%3.1f%%', shadow=False, startangle=45, pctdistance=0.8)
     plt.title("平台商铺评论评分统计")
     plt.axis('equal')
