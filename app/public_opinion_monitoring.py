@@ -55,7 +55,7 @@ def register():
         message = '输入的手机号不正确.'
         return render_template('error.html', err_message=message)
     result = general_service.register_account(user, password1, cellphone)
-    if result == 0:
+    if result[0] == 0:
         message = result[1]
         return render_template('error.html', err_message=message)
     return render_template('login.html')
