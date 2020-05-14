@@ -162,7 +162,7 @@ def get_shop_key_words(shop_id):
     filtered_result = []
     key_words = []
     for each in result:
-        if len(str(each['key_word']).strip()) == 0:
+        if each['key_word'] is None or len(str(each['key_word']).strip()) == 0:
             continue
         filtered_result.append(each)
         key_words.append(each['key_word'])
