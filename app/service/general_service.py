@@ -106,7 +106,7 @@ def plot_statistic_image():
     plt.axis('equal')
     plt.legend()
     plt.savefig('./static/scores.png')
-    plt.show()
+    # plt.show()
 
 
 def top_rating_shop(top_n):
@@ -140,7 +140,7 @@ def plot_top_rated_shop():
     plt.ylabel('店铺名称')
     plt.barh(x, y, )
     plt.savefig('./static/top_n.png', dpi=300)
-    plt.show()
+    # plt.show()
 
 
 def get_all_comments():
